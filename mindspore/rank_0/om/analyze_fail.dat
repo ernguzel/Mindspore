@@ -1,0 +1,256 @@
+# 1.This file shows the parsed IR info when graph evaluating failed to help find the problem.
+# 2.You can search the last `------------------------>` to the node which is inferred failed.
+# 3.Refer to https://www.mindspore.cn/search?inputValue=analyze_fail.dat to get more instructions.
+# ===============================================================================
+
+# [No.1] Default_wrapper.1
+# In file /home/eren/Eren/projects/mindspore/eren_dataset_all_deneme_sekli.py:51/    def construct(self, x):/
+funcgraph fg_1(
+        %para1 : Tensor(F32)[1, 3, 32, 32]    # x
+        , %para2 : Ref[Tensor(F32)][4096]    # fc.0.bias
+        , %para3 : Ref[Tensor(F32)][4096, 512]    # fc.0.weight
+        , %para4 : Ref[Tensor(F32)][4096]    # fc.3.bias
+        , %para5 : Ref[Tensor(F32)][4096, 4096]    # fc.3.weight
+        , %para6 : Ref[Tensor(F32)][256, 128, 3, 3]    # conv3.0.weight
+        , %para7 : Ref[Tensor(F32)][128, 64, 3, 3]    # conv2.0.weight
+        , %para8 : Ref[Tensor(F32)][64, 3, 3, 3]    # conv1.0.weight
+    ) {
+
+#------------------------> 0
+    %1 = FuncGraph::fg_8(%para1)    #(Tensor(F32)[1, 3, 32, 32])    # fg_8=Default.8 #scope: Default
+#[CNode]17
+    Primitive::Return{prim_type=1}(%1)    #(Undefined) #scope: Default
+      # In file /home/eren/Eren/projects/mindspore/eren_dataset_all_deneme_sekli.py:57/        return x/#[CNode]18
+}
+# order:
+#   1: @Default_wrapper.1:[CNode]17{[0]: ValueNode<FuncGraph> Default.8, [1]: x}
+#   2: @Default_wrapper.1:[CNode]18{[0]: ValueNode<Primitive> Return, [1]: [CNode]17}
+
+
+# [No.2] Default.8
+# In file /home/eren/Eren/projects/mindspore/eren_dataset_all_deneme_sekli.py:51/    def construct(self, x):/
+funcgraph fg_8[fg_1](
+        %para9 : Tensor(F32)[1, 3, 32, 32]    # x
+    ) {
+    %1 : Tensor(F32)[1, 64, 16, 16] = FuncGraph::fg_19(%para9)    #(Tensor(F32)[1, 3, 32, 32])    # fg_19=SequentialCell.19 #scope: Default
+      # In file /home/eren/Eren/projects/mindspore/eren_dataset_all_deneme_sekli.py:52/        x = self.conv1(x)/#x
+    %2 : Tensor(F32)[1, 128, 8, 8] = FuncGraph::fg_20(%1)    #(Tensor(F32)[1, 64, 16, 16])    # fg_20=SequentialCell.20 #scope: Default
+      # In file /home/eren/Eren/projects/mindspore/eren_dataset_all_deneme_sekli.py:53/        x = self.conv2(x)/#x
+    %3 : Tensor(F32)[1, 256, 4, 4] = FuncGraph::fg_21(%2)    #(Tensor(F32)[1, 128, 8, 8])    # fg_21=SequentialCell.21 #scope: Default
+      # In file /home/eren/Eren/projects/mindspore/eren_dataset_all_deneme_sekli.py:54/        x = self.conv3(x)/#x
+    %4 : FuncNoShape = Primitive::getattr{prim_type=1}(%3, "view")    #(Tensor(F32)[1, 256, 4, 4], StringNoShape) #scope: Default
+      # In file /home/eren/Eren/projects/mindspore/eren_dataset_all_deneme_sekli.py:55/        x = x.view(x.shape[0], -1)  # Flatten/#[CNode]22
+    %5 : Tuple[I64*4]TupleShape(NoShape, NoShape, NoShape, NoShape) = Primitive::getattr{prim_type=1}(%3, "shape")    #(Tensor(F32)[1, 256, 4, 4], StringNoShape) #scope: Default
+      # In file /home/eren/Eren/projects/mindspore/eren_dataset_all_deneme_sekli.py:55/        x = x.view(x.shape[0], -1)  # Flatten/#[CNode]23
+    %6 : I64NoShape = DoSignaturePrimitive::S-Prim-getitem{prim_type=1}(%5, I64(0))    #(Tuple[I64*4]TupleShape(NoShape, NoShape, NoShape, NoShape), I64NoShape) #scope: Default
+      # In file /home/eren/Eren/projects/mindspore/eren_dataset_all_deneme_sekli.py:55/        x = x.view(x.shape[0], -1)  # Flatten/#[CNode]24
+    %7 : I64NoShape = DoSignaturePrimitive::S-Prim-negative{prim_type=1}(I64(1))    #(I64NoShape) #scope: Default
+      # In file /home/eren/Eren/projects/mindspore/eren_dataset_all_deneme_sekli.py:55/        x = x.view(x.shape[0], -1)  # Flatten/#[CNode]25
+    %8 : Tensor(F32)[1, 4096] = %4(%6, %7)    #(I64NoShape, I64NoShape) #scope: Default
+      # In file /home/eren/Eren/projects/mindspore/eren_dataset_all_deneme_sekli.py:55/        x = x.view(x.shape[0], -1)  # Flatten/#x
+
+#------------------------> 1
+    %9 = FuncGraph::fg_9(%8)    #(Tensor(F32)[1, 4096])    # fg_9=SequentialCell.9 #scope: Default
+      # In file /home/eren/Eren/projects/mindspore/eren_dataset_all_deneme_sekli.py:56/        x = self.fc(x)/#x
+    Primitive::Return{prim_type=1}(%9)    #(Undefined) #scope: Default
+      # In file /home/eren/Eren/projects/mindspore/eren_dataset_all_deneme_sekli.py:57/        return x/#[CNode]26
+}
+# order:
+#   1: @Default.8:x{[0]: ValueNode<FuncGraph> SequentialCell.19, [1]: x}
+#   2: @Default.8:x{[0]: ValueNode<FuncGraph> SequentialCell.20, [1]: x}
+#   3: @Default.8:x{[0]: ValueNode<FuncGraph> SequentialCell.21, [1]: x}
+#   4: @Default.8:[CNode]22{[0]: ValueNode<Primitive> getattr, [1]: x, [2]: ValueNode<StringImm> view}
+#   5: @Default.8:[CNode]23{[0]: ValueNode<Primitive> getattr, [1]: x, [2]: ValueNode<StringImm> shape}
+#   6: @Default.8:[CNode]24{[0]: ValueNode<DoSignaturePrimitive> S-Prim-getitem, [1]: [CNode]23, [2]: ValueNode<Int64Imm> 0}
+#   7: @Default.8:[CNode]25{[0]: ValueNode<DoSignaturePrimitive> S-Prim-negative, [1]: ValueNode<Int64Imm> 1}
+#   8: @Default.8:x{[0]: [CNode]22, [1]: [CNode]24, [2]: [CNode]25}
+#   9: @Default.8:x{[0]: ValueNode<FuncGraph> SequentialCell.9, [1]: x}
+#  10: @Default.8:[CNode]26{[0]: ValueNode<Primitive> Return, [1]: x}
+
+
+# [No.3] SequentialCell.9
+# In file /home/eren/.local/lib/python3.9/site-packages/mindspore/nn/layer/container.py:277/    def construct(self, input_data):/
+funcgraph fg_9[fg_1](
+        %para10 : Tensor(F32)[1, 4096]    # input_data
+    ) {
+
+#------------------------> 2
+    %1 = FuncGraph::fg_10(I64(0), %para10)    #(I64NoShape, Tensor(F32)[1, 4096])    # fg_10=↵SequentialCell.10 #scope: Default/fc-SequentialCell
+      # In file /home/eren/.local/lib/python3.9/site-packages/mindspore/nn/layer/container.py:278/        for cell in self.cell_list:/#[CNode]27
+    Primitive::Return{prim_type=1}(%1)    #(Undefined) #scope: Default/fc-SequentialCell
+      # In file /home/eren/.local/lib/python3.9/site-packages/mindspore/nn/layer/container.py:278/        for cell in self.cell_list:/#[CNode]28
+}
+# order:
+#   1: @SequentialCell.9:[CNode]29{[0]: ValueNode<FuncGraph> ms_len.30, [1]: [CNode]31}
+#   2: @SequentialCell.9:[CNode]27{[0]: ValueNode<FuncGraph> ↵SequentialCell.10, [1]: ValueNode<Int64Imm> 0, [2]: input_data}
+#   3: @SequentialCell.9:[CNode]28{[0]: ValueNode<Primitive> Return, [1]: [CNode]27}
+
+
+# [No.4] ↵SequentialCell.10
+# In file /home/eren/.local/lib/python3.9/site-packages/mindspore/nn/layer/container.py:278/        for cell in self.cell_list:/
+funcgraph fg_10[fg_9](
+        %para11 : I64NoShape    # @[CNode]11
+        , %para12 : Tensor(F32)[1, 4096]    # фinput_data
+    ) {
+    %1 : $(SequentialCell.9):Tuple[Func*4]TupleShape(NoShape, NoShape, NoShape, NoShape) = Primitive::MakeTuple{prim_type=1}(FuncGraph::fg_13, FuncGraph::fg_32, FuncGraph::fg_33, FuncGraph::fg_34)    #(FuncNoShape, FuncNoShape, FuncNoShape, FuncNoShape)    # fg_13=Dense.13, fg_32=ReLU.32, fg_33=Dropout.33, fg_34=Dense.34 #scope: Default/fc-SequentialCell
+      # In file /home/eren/.local/lib/python3.9/site-packages/mindspore/nn/layer/container.py:278/        for cell in self.cell_list:/#[CNode]31
+    %2 : $(SequentialCell.9):I64NoShape = FuncGraph::fg_30(%1)    #(Tuple[Func*4]TupleShape(NoShape, NoShape, NoShape, NoShape))    # fg_30=ms_len.30 #scope: Default/fc-SequentialCell
+      # In file /home/eren/.local/lib/python3.9/site-packages/mindspore/nn/layer/container.py:278/        for cell in self.cell_list:/#[CNode]29
+    %3 : BoolNoShape = MultitypeFuncGraph::less{(Tensor, Number), (Tensor, Tensor), (Number, Tensor), (String, String), (Number, Number)}(%para11, %2)    #(I64NoShape, I64NoShape) #scope: Default/fc-SequentialCell
+      # In file /home/eren/.local/lib/python3.9/site-packages/mindspore/nn/layer/container.py:278/        for cell in self.cell_list:/#[CNode]35
+    %4 : FuncNoShape = Primitive::Switch{prim_type=1}(%3, FuncGraph::fg_12, FuncGraph::fg_36)    #(BoolNoShape, FuncNoShape, FuncNoShape)    # fg_12=↻SequentialCell.12, fg_36=↓SequentialCell.36 #scope: Default/fc-SequentialCell
+      # In file /home/eren/.local/lib/python3.9/site-packages/mindspore/nn/layer/container.py:278/        for cell in self.cell_list:/#[CNode]37
+
+#------------------------> 3
+    %5 = %4() #scope: Default/fc-SequentialCell
+      # In file /home/eren/.local/lib/python3.9/site-packages/mindspore/nn/layer/container.py:278/        for cell in self.cell_list:/#[CNode]38
+    Primitive::Return{prim_type=1}(%5)    #(Undefined) #scope: Default/fc-SequentialCell
+      # In file /home/eren/.local/lib/python3.9/site-packages/mindspore/nn/layer/container.py:278/        for cell in self.cell_list:/#[CNode]39
+}
+# order:
+#   1: @↵SequentialCell.10:[CNode]35{[0]: ValueNode<MultitypeFuncGraph> less.40, [1]: @[CNode]11, [2]: [CNode]29}
+#   2: @↵SequentialCell.10:[CNode]37{[0]: ValueNode<Primitive> Switch, [1]: [CNode]35, [2]: ValueNode<FuncGraph> ↻SequentialCell.12, [3]: ValueNode<FuncGraph> ↓SequentialCell.36}
+#   3: @↵SequentialCell.10:[CNode]38{[0]: [CNode]37}
+#   4: @↵SequentialCell.10:[CNode]39{[0]: ValueNode<Primitive> Return, [1]: [CNode]38}
+
+
+# [No.5] ↻SequentialCell.12
+# In file /home/eren/.local/lib/python3.9/site-packages/mindspore/nn/layer/container.py:278/        for cell in self.cell_list:/
+funcgraph fg_12[fg_10](
+) {
+    %1 : I64NoShape = MultitypeFuncGraph::add{(COOTensor, COOTensor), (CSRTensor, CSRTensor), (Number, Number), (String, String), (Tensor, List), (Tuple, Tuple), (Tensor, Number), (Number, Tensor), (Tuple, Tensor), (Tensor, Tuple), (COOTensor, Tensor), (List, List), (Tensor, COOTensor), (Tensor, Tensor), (List, Tensor), (RowTensor, Tensor), (NoneType, NoneType)}(%para11, I64(1))    #(I64NoShape, I64NoShape) #scope: Default/fc-SequentialCell
+      # In file /home/eren/.local/lib/python3.9/site-packages/mindspore/nn/layer/container.py:278/        for cell in self.cell_list:/#[CNode]11
+    %2 : I64NoShape = Primitive::stop_gradient{prim_type=1}(%1)    #(I64NoShape) #scope: Default/fc-SequentialCell
+      # In file /home/eren/Eren/projects/mindspore/eren_dataset_all_deneme_sekli.py:56/        x = self.fc(x)/#[CNode]41
+    %3 : $(SequentialCell.9):Tuple[Func*4]TupleShape(NoShape, NoShape, NoShape, NoShape) = Primitive::MakeTuple{prim_type=1}(FuncGraph::fg_13, FuncGraph::fg_32, FuncGraph::fg_33, FuncGraph::fg_34)    #(FuncNoShape, FuncNoShape, FuncNoShape, FuncNoShape)    # fg_13=Dense.13, fg_32=ReLU.32, fg_33=Dropout.33, fg_34=Dense.34 #scope: Default/fc-SequentialCell
+      # In file /home/eren/.local/lib/python3.9/site-packages/mindspore/nn/layer/container.py:278/        for cell in self.cell_list:/#[CNode]31
+    %4 : FuncNoShape = DoSignaturePrimitive::S-Prim-getitem{prim_type=1}(%3, %para11)    #(Tuple[Func*4]TupleShape(NoShape, NoShape, NoShape, NoShape), I64NoShape) #scope: Default/fc-SequentialCell
+      # In file /home/eren/.local/lib/python3.9/site-packages/mindspore/nn/layer/container.py:278/        for cell in self.cell_list:/#cell
+
+#------------------------> 4
+    %5 = %4(%para12)    #(Tensor(F32)[1, 4096]) #scope: Default/fc-SequentialCell
+      # In file /home/eren/.local/lib/python3.9/site-packages/mindspore/nn/layer/container.py:279/            input_data = cell(input_data)/#input_data
+    %6 = FuncGraph::fg_10(%1, %5)    #(I64NoShape, Undefined)    # fg_10=↵SequentialCell.10 #scope: Default/fc-SequentialCell
+      # In file /home/eren/.local/lib/python3.9/site-packages/mindspore/nn/layer/container.py:278/        for cell in self.cell_list:/#[CNode]42
+    %7 = Primitive::Depend{prim_type=1}[side_effect_propagate=I64(1)](%6, %2)    #(Undefined, I64NoShape) #scope: Default/fc-SequentialCell
+      # In file /home/eren/Eren/projects/mindspore/eren_dataset_all_deneme_sekli.py:56/        x = self.fc(x)/#[CNode]43
+    Primitive::Return{prim_type=1}(%7)    #(Undefined) #scope: Default/fc-SequentialCell
+      # In file /home/eren/.local/lib/python3.9/site-packages/mindspore/nn/layer/container.py:278/        for cell in self.cell_list:/#[CNode]44
+}
+# order:
+#   1: @↻SequentialCell.12:cell{[0]: ValueNode<DoSignaturePrimitive> S-Prim-getitem, [1]: [CNode]31, [2]: @[CNode]11}
+#   2: @↻SequentialCell.12:[CNode]11{[0]: ValueNode<MultitypeFuncGraph> add.45, [1]: @[CNode]11, [2]: ValueNode<Int64Imm> 1}
+#   3: @↻SequentialCell.12:input_data{[0]: cell, [1]: фinput_data}
+#   4: @↻SequentialCell.12:[CNode]42{[0]: ValueNode<FuncGraph> ↵SequentialCell.10, [1]: [CNode]11, [2]: input_data}
+#   5: @↻SequentialCell.12:[CNode]44{[0]: ValueNode<Primitive> Return, [1]: [CNode]43}
+
+
+# [No.6] Dense.13
+# In file /home/eren/.local/lib/python3.9/site-packages/mindspore/nn/layer/basic.py:463/    def construct(self, x):/
+funcgraph fg_13[fg_1](
+        %para13 : Tensor(F32)[1, 4096]    # x
+    ) {
+
+#------------------------> 5
+    %1 = FuncGraph::fg_14(%para13, %para2, %para3)    #(Tensor(F32)[1, 4096], Ref[Tensor(F32)][4096], Ref[Tensor(F32)][4096, 512])    # fg_14=L-Dense.14 #scope: Default
+#[CNode]46
+    Primitive::Return{prim_type=1}(%1)    #(Undefined) #scope: Default/fc-SequentialCell/0-Dense
+      # In file /home/eren/.local/lib/python3.9/site-packages/mindspore/nn/layer/basic.py:466/        if len(x_shape) != 2:/#[CNode]47
+}
+# order:
+#   1: @Dense.13:[CNode]46{[0]: ValueNode<FuncGraph> L-Dense.14, [1]: x, [2]: fc.0.bias, [3]: fc.0.weight}
+#   2: @Dense.13:[CNode]47{[0]: ValueNode<Primitive> Return, [1]: [CNode]46}
+
+
+# [No.7] L-Dense.14
+# In file /home/eren/.local/lib/python3.9/site-packages/mindspore/nn/layer/basic.py:463/    def construct(self, x):/
+funcgraph fg_14(
+        %para14 : Tensor(F32)[1, 4096]    # x
+        , %para15 : Ref[Tensor(F32)][4096]    # L-fc.0.bias
+        , %para16 : Ref[Tensor(F32)][4096, 512]    # L-fc.0.weight
+    ) {
+    %1 : Tuple[I64*2]TupleShape(NoShape, NoShape) = DoSignaturePrimitive::S-Prim-Shape{prim_type=1}(%para14)    #(Tensor(F32)[1, 4096]) #scope: Default/fc-SequentialCell/0-Dense
+      # In file /home/eren/.local/lib/python3.9/site-packages/mindspore/nn/layer/basic.py:473/        if len(x_shape) != 2:/#фx_shape
+    %2 : NoneTypeNoShape = DoSignaturePrimitive::S-Prim-check_dense_input_shape{prim_type=1}(%1, "Dense")    #(Tuple[I64*2]TupleShape(NoShape, NoShape), StringNoShape) #scope: Default/fc-SequentialCell/0-Dense
+      # In file /home/eren/.local/lib/python3.9/site-packages/mindspore/nn/layer/basic.py:465/        check_dense_input_shape(x_shape, self.cls_name)/#48
+    %3 : NoneTypeNoShape = Primitive::stop_gradient{prim_type=1}(%2)    #(NoneTypeNoShape) #scope: Default/fc-SequentialCell/0-Dense
+      # In file /home/eren/.local/lib/python3.9/site-packages/mindspore/nn/layer/container.py:278/        for cell in self.cell_list:/#49
+    %4 : I64NoShape = FuncGraph::fg_50(%1)    #(Tuple[I64*2]TupleShape(NoShape, NoShape))    # fg_50=L-ms_len.50 #scope: Default/fc-SequentialCell/0-Dense
+      # In file /home/eren/.local/lib/python3.9/site-packages/mindspore/nn/layer/basic.py:466/        if len(x_shape) != 2:/#51
+    %5 : BoolNoShape = DoSignaturePrimitive::S-Prim-not_equal{prim_type=1}(%4, I64(2))    #(I64NoShape, I64NoShape) #scope: Default/fc-SequentialCell/0-Dense
+      # In file /home/eren/.local/lib/python3.9/site-packages/mindspore/nn/layer/basic.py:466/        if len(x_shape) != 2:/#52
+    %6 : BoolNoShape = FuncGraph::fg_53(%5)    #(BoolNoShape)    # fg_53=L-bool_.53 #scope: Default/fc-SequentialCell/0-Dense
+      # In file /home/eren/.local/lib/python3.9/site-packages/mindspore/nn/layer/basic.py:466/        if len(x_shape) != 2:/#54
+    %7 : FuncNoShape = Primitive::Switch{prim_type=1}(%6, FuncGraph::fg_55, FuncGraph::fg_56)    #(BoolNoShape, FuncNoShape, FuncNoShape)    # fg_55=L-✓Dense.55, fg_56=L-✗Dense.56 #scope: Default/fc-SequentialCell/0-Dense
+      # In file /home/eren/.local/lib/python3.9/site-packages/mindspore/nn/layer/basic.py:466/        if len(x_shape) != 2:/#57
+    %8 : Tensor(F32)[1, 4096] = %7() #scope: Default/fc-SequentialCell/0-Dense
+      # In file /home/eren/.local/lib/python3.9/site-packages/mindspore/nn/layer/basic.py:466/        if len(x_shape) != 2:/#58
+
+#------------------------> 6
+    %9 = FuncGraph::fg_15(%8)    #(Tensor(F32)[1, 4096])    # fg_15=L-↓Dense.15 #scope: Default/fc-SequentialCell
+      # In file /home/eren/.local/lib/python3.9/site-packages/mindspore/nn/layer/container.py:278/        for cell in self.cell_list:/#59
+    %10 = Primitive::Depend{prim_type=1}[side_effect_propagate=I64(1)](%9, %3)    #(Undefined, NoneTypeNoShape) #scope: Default/fc-SequentialCell
+      # In file /home/eren/.local/lib/python3.9/site-packages/mindspore/nn/layer/container.py:278/        for cell in self.cell_list:/#60
+    Primitive::Return{prim_type=1}(%10)    #(Undefined) #scope: Default/fc-SequentialCell/0-Dense
+      # In file /home/eren/.local/lib/python3.9/site-packages/mindspore/nn/layer/basic.py:466/        if len(x_shape) != 2:/#[CNode]47
+}
+# order:
+#   1: @L-Dense.14:фx_shape{[0]: ValueNode<DoSignaturePrimitive> S-Prim-Shape, [1]: x}
+#   2: @L-Dense.14:48{[0]: ValueNode<DoSignaturePrimitive> S-Prim-check_dense_input_shape, [1]: фx_shape, [2]: ValueNode<StringImm> Dense}
+#   3: @L-Dense.14:51{[0]: ValueNode<FuncGraph> L-ms_len.50, [1]: фx_shape}
+#   4: @L-Dense.14:52{[0]: ValueNode<DoSignaturePrimitive> S-Prim-not_equal, [1]: 51, [2]: ValueNode<Int64Imm> 2}
+#   5: @L-Dense.14:54{[0]: ValueNode<FuncGraph> L-bool_.53, [1]: 52}
+#   6: @L-Dense.14:57{[0]: ValueNode<Primitive> Switch, [1]: 54, [2]: ValueNode<FuncGraph> L-✓Dense.55, [3]: ValueNode<FuncGraph> L-✗Dense.56}
+#   7: @L-Dense.14:58{[0]: 57}
+#   8: @L-Dense.14:59{[0]: ValueNode<FuncGraph> L-↓Dense.15, [1]: 58}
+#   9: @L-Dense.14:60{[0]: ValueNode<Primitive> Depend, [1]: 59, [2]: 49}
+#  10: @L-Dense.14:[CNode]47{[0]: ValueNode<Primitive> Return, [1]: 60}
+
+
+# [No.8] L-↓Dense.15
+# In file /home/eren/.local/lib/python3.9/site-packages/mindspore/nn/layer/basic.py:466/        if len(x_shape) != 2:/
+funcgraph fg_15[fg_14](
+        %para17 : Tensor(F32)[1, 4096]    # фx
+    ) {
+    %1 : BoolNoShape = FuncGraph::fg_53(Bool(1))    #(BoolNoShape)    # fg_53=L-bool_.53 #scope: Default/fc-SequentialCell/0-Dense
+      # In file /home/eren/.local/lib/python3.9/site-packages/mindspore/nn/layer/basic.py:469/        if self.has_bias:/#61
+    %2 : FuncNoShape = Primitive::Switch{prim_type=1}(%1, FuncGraph::fg_16, FuncGraph::fg_62)    #(BoolNoShape, FuncNoShape, FuncNoShape)    # fg_16=L-✓↓Dense.16, fg_62=L-✗↓Dense.62 #scope: Default/fc-SequentialCell/0-Dense
+      # In file /home/eren/.local/lib/python3.9/site-packages/mindspore/nn/layer/basic.py:469/        if self.has_bias:/#63
+
+#------------------------> 7
+    %3 = %2() #scope: Default/fc-SequentialCell/0-Dense
+      # In file /home/eren/.local/lib/python3.9/site-packages/mindspore/nn/layer/basic.py:469/        if self.has_bias:/#64
+    %4 = FuncGraph::fg_65(%3)    #(Undefined)    # fg_65=L-↓↓Dense.65 #scope: Default/fc-SequentialCell
+      # In file /home/eren/.local/lib/python3.9/site-packages/mindspore/nn/layer/container.py:278/        for cell in self.cell_list:/#66
+    Primitive::Return{prim_type=1}(%4)    #(Undefined) #scope: Default/fc-SequentialCell/0-Dense
+      # In file /home/eren/.local/lib/python3.9/site-packages/mindspore/nn/layer/basic.py:469/        if self.has_bias:/#67
+}
+# order:
+#   1: @L-↓Dense.15:x{[0]: ValueNode<DoSignaturePrimitive> S-Prim-MatMul, [1]: фx, [2]: L-fc.0.weight}
+#   2: @L-↓Dense.15:61{[0]: ValueNode<FuncGraph> L-bool_.53, [1]: ValueNode<BoolImm> true}
+#   3: @L-↓Dense.15:63{[0]: ValueNode<Primitive> Switch, [1]: 61, [2]: ValueNode<FuncGraph> L-✓↓Dense.16, [3]: ValueNode<FuncGraph> L-✗↓Dense.62}
+#   4: @L-↓Dense.15:64{[0]: 63}
+#   5: @L-↓Dense.15:66{[0]: ValueNode<FuncGraph> L-↓↓Dense.65, [1]: 64}
+#   6: @L-↓Dense.15:67{[0]: ValueNode<Primitive> Return, [1]: 66}
+
+
+# [No.9] L-✓↓Dense.16
+# In file /home/eren/.local/lib/python3.9/site-packages/mindspore/nn/layer/basic.py:469/        if self.has_bias:/
+funcgraph fg_16[fg_15](
+) {
+
+#------------------------> 8
+    %1 = $(L-↓Dense.15):DoSignaturePrimitive::S-Prim-MatMul{prim_type=1}[output_names=["output"], transpose_a=Bool(0), input_names=["x1", "x2"], transpose_x2=Bool(1), transpose_x1=Bool(0), transpose_b=Bool(1)](%para17, %para16)    #(Tensor(F32)[1, 4096], Ref[Tensor(F32)][4096, 512]) #scope: Default/fc-SequentialCell/0-Dense
+      # In file /home/eren/.local/lib/python3.9/site-packages/mindspore/nn/layer/basic.py:468/        x = self.matmul(x, self.weight)/#x
+    %2 = DoSignaturePrimitive::S-Prim-BiasAdd{prim_type=1}[output_names=["output"], format="NCHW", input_names=["x", "b"]](%1, %para15)    #(Undefined, Ref[Tensor(F32)][4096]) #scope: Default/fc-SequentialCell/0-Dense
+      # In file /home/eren/.local/lib/python3.9/site-packages/mindspore/nn/layer/basic.py:470/            x = self.bias_add(x, self.bias)/#x
+    Primitive::Return{prim_type=1}(%2)    #(Undefined) #scope: Default/fc-SequentialCell/0-Dense
+      # In file /home/eren/.local/lib/python3.9/site-packages/mindspore/nn/layer/basic.py:469/        if self.has_bias:/#68
+}
+# order:
+#   1: @L-✓↓Dense.16:x{[0]: ValueNode<DoSignaturePrimitive> S-Prim-BiasAdd, [1]: x, [2]: L-fc.0.bias}
+#   2: @L-✓↓Dense.16:68{[0]: ValueNode<Primitive> Return, [1]: x}
+
+
+#===============================================================================
+# num of function graphs in stack: 9/10 (Ignored 1 internal frames).
