@@ -4,6 +4,9 @@ from mindspore import Tensor, dtype as mstype
 from mindspore.train.serialization import load_checkpoint, load_param_into_net
 from mindspore.dataset.vision import Rescale, Resize, HWC2CHW
 from mindspore import nn
+from mindspore import context
+
+context.set_context(mode=context.GRAPH_MODE, device_target="CPU")
 
 # İleri düzey sınıflandırma modeli
 class AdvancedClassificationNet(nn.Cell):
@@ -63,7 +66,7 @@ class AdvancedClassificationNet(nn.Cell):
             nn.Dense(4096, 4096),
             nn.ReLU(),
             nn.Dropout(keep_prob=0.5),
-            nn.Dense(4096, 2)
+            nn.Dense(4096, 7)
         ])
 
     def construct(self, x):

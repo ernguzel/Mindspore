@@ -140,7 +140,7 @@ if __name__ == '__main__':
 
     # Modeli eğit
     print("Model eğitimi başlıyor...")
-    model.train(epoch=250, train_dataset=train_dataset, callbacks=[LossMonitor()], dataset_sink_mode=False)
+    model.train(epoch=500, train_dataset=train_dataset, callbacks=[LossMonitor()], dataset_sink_mode=False)
     print("Eğitim tamamlandı!")
 
     # Modeli kaydet

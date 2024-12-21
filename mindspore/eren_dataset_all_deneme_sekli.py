@@ -98,7 +98,7 @@ def predict_class(frame, model):
 
 # Modeli yükle
 model = AdvancedClassificationNet()
-param_dict = load_checkpoint("/home/eren/Eren/projects/Mindspore/mindspore/advanced_motion_detection_eren_dataset.ckpt")
+param_dict = load_checkpoint("/home/eren/Eren/projects/Mindspore/mindspore/advanced_motion_detection_eren_dataset_iki.ckpt")
 load_param_into_net(model, param_dict)
 model.set_train(False)
 
